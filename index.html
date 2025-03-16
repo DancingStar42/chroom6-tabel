@@ -73,7 +73,12 @@
     }
 
     .monster-nummer {
-        flex: 1; /* Zorgt ervoor dat het veld zich aanpast aan de ruimte */
+        flex: 2; /* Zorgt ervoor dat het veld groter wordt ten opzichte van andere elementen */
+        width: 100%; /* Zorgt ervoor dat het veld de maximale ruimte benut */
+        min-width: 90px; /* Voorkomt dat het veld te klein wordt */
+        font-size: 16px; /* Grotere tekst voor betere leesbaarheid */
+        padding: 10px; /* Extra binnenruimte voor een groter veld */
+        height: 30px; /* Maakt het veld hoger zodat het beter zichtbaar is */
     }
 
     .analyse-label {
