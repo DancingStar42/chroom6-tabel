@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Invultabel chroom-6 onderzoek</title>
+         <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- **Zorgt voor goede schaalbaarheid op mobiel**  -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"> <!-- Bootstrap - Latest compiled and minified CSS -->
+  
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.25.4/docxtemplater.js"></script>
+        <script src="https://unpkg.com/pizzip@3.1.8/dist/pizzip.js"></script>
+        <script src="https://unpkg.com/pizzip@3.1.8/dist/pizzip-utils.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
+    
+        <style>
+        #tabel{
+            display:none;}
+            
+    /* Zorg dat de inputvelden en dropdowns 100% breedte hebben op kleine schermen */
+        .form-control, .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    
+    /* Maak de radio buttons netjes op mobiel */
+        .materiaal-opties label {
+            display: block;
+            font-size: 16px;
+        }
+
+    /* Voeg padding toe voor beter leesbare invoervelden */
+        .verf-kleuren input {
+            padding: 8px;
+            font-size: 16px;
+        }
+
+    /* Zorg dat alles netjes in een flexibele kolom staat op kleine schermen */
+        @media (max-width: 576px) {
+            .container { padding: 10px; }
+            h3 { font-size: 20px; text-align: center; }
+            .materiaal-opties { text-align: left; }
+        }
+            
+    /* Verwijder extra inspringing van nieuwe regels */    
+    .regel {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+        }
+    /* Zachte grijze scheidingslijn onder elke constructie */
+    .regel {
+        border-bottom: 2px solid #ddd; /* Grijze lijn */
+        padding-bottom: 15px; /* Ruimte onder de lijn */
+        margin-bottom: 15px; /* Extra ruimte tussen constructies */
+    }
+
+    /* Afwisselende achtergrondkleur voor constructies */
+    .regel:nth-child(even) {
+        background-color: #e3f2fd; /* Lichtgrijze achtergrond voor even constructies */
+    }
+    .regel:nth-child(odd) {
+        background-color: #ffffff; /* Witte achtergrond voor oneven constructies */
+    }
+
+    /* Optionele extra styling voor duidelijke afscheiding */
+    .regel:first-child {
+        border-top: 2px solid #ddd; /* Voorkomt dat de eerste regel geen lijn heeft */
+    }
+            
+    .monster-row {
+        display: flex;
+        align-items: center;
+        gap: 15px; /* Ruimte tussen monsternummer en checkboxes */
+    }
+
+    .monster-nummer {
+        flex: 1; /* Zorgt ervoor dat het veld zich aanpast aan de ruimte */
+    }
+
+    .analyse-label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+            
+        </style>
+    </head>
+    
+    <body>
+    <div class="container">
+        <h3 class="col-md-12 bg-success-subtle text-center">Veldwerktabel chroom-6/lood onderzoek</h3>
+        <div id="invullen" class="text-left">
+        <div class="col-xs-12">
+            <label style= "color: red">Projectnummer (verplicht):</label>
+            <input type="text" id="projectNummer" class="form-control" placeholder="Voer projectnummer in">
+        </div>
+ <!--           <p>Vul de gegevens van de monstername zo volledig mogelijk in.</p> -->
+            <button id="begin" class="btn" type="button" hidden>Begin met invullen</button>
+        </div>
+    <br>
+        
+        
+    <div id="tabel">
+
+        <h4 class="text-left">Vul je waarnemingen in (kies uit de drop-down, selecteer een optie of voer handmatig een waarde in)</h4>
+        <br>
+        <div id="regels">
+            
+        <!-- eerste rij als sjabloon -->
+             <div class="regel row">
+                 <h5 class="col-xs-12">Constructie 01</h5>
+                 <div class="col-xs-12">
+             <input name="onderdeelnr" class="form-control" type="hidden" value="01">
+                </div>
+            <!-- Drop-down lijst -->
+             <div class="col-xs-12">
+                <select class="form-control onderdeel-dropdown">
+                    <option value="" selected disabled>Kies naam van het onderdeel</option>
+                    <option value="Draagconstructie">Draagconstructie</option>
+                    <option value="Deuren buiten">Deuren buiten</option>
+                    <option value="Deuren binnen">Deuren binnen</option>
+                    <option value="Deurkozijnen buiten">Deurkozijnen buiten</option>
+                    <option value="Deurkozijnen binnen">Deurkozijnen binnen</option>
+                    <option value="Raamkozijnen buiten">Raamkozijnen buiten</option>
+                    <option value="Raamkozijnen binnen">Raamkozijnen binnen</option>
+                    <option value="Hemelwaterafvoeren">Hemelwaterafvoeren</option>
+                    <option value="Trap en railing buiten">Trap en railing buiten</option>
+                    <option value="Trap en railing binnen">Trap en railing binnen</option>
+                    <option value="Damwand dakbeschot">Damwand dakbeschot</option>
+                    <option value="Hekken">Hekken</option>
+                    <option value="Transformatoren">Transformatoren</option>
+                    <option value="Schakelaars">Schakelaars</option>
+                    <option value="3-fase leidingen">3-fase leidingen</option>
+                    <option value="anders">Anders...</option>
+                </select>
+                <!-- Invoerveld dat bewerkbaar is -->
+                    <input type="text" class="form-control onderdeel-input" placeholder="Voer een onderdeel in" style="display:none;">
+                 </div>
+                 
+                <!-- Opties voor materiaal -->                     
+                 <div class="col-xs-12 materiaal-opties">
+                        <strong>Selecteer het materiaal van de constructie:</strong><br>
+                        <label><input type="radio" name="materiaal-01" value="staal" checked> staal</label>
+                        <label><input type="radio" name="materiaal-01" value="aluminium"> aluminium</label>
+                        <label><input type="radio" name="materiaal-01" value="koper"> koper</label>
+                        <label><input type="radio" name="materiaal-01" value="hout"> hout</label>
+                    </div>
+                 
+                <!-- Veld voor aantal verflagen -->
+                <div class="col-xs-12">
+                <label>Aantal verflagen:</label>
+                <input name="nrlagen" class="form-control verflaag-input" type="number" min="0" value="0">
+                </div>
+                <!-- Container waar de kleurvelden worden gegenereerd -->
+                <div class="col-xs-12 verf-kleuren"></div>
+                 
+                 <!-- Drop-down voor chroom-6 testresultaat -->
+                <div class="col-xs-12">
+                    <label>Sneltest chroom-6:</label>
+                    <select name="chroom6_uitslag" class="form-control">
+                        <option value="" selected disabled>Selecteer een optie...</option>
+                        <option value="negatief">Negatief</option>
+                        <option value="licht positief">Licht positief</option>
+                        <option value="positief">Positief</option>
+                        <option value="sterk positief">Sterk positief</option>
+                        <option value="niet uitgevoerd">Niet uitgevoerd</option>
+                        <option value="niet eenduidig">De uitslag niet eenduidig door eigen kleur verf</option>
+                    </select>
+                </div>
+
+                <!-- Drop-down voor lood testresultaat -->
+                <div class="col-xs-12">
+                    <label>Sneltest lood:</label>
+                    <select name="lood_uitslag" class="form-control">
+                        <option value="" selected disabled>Selecteer een optie...</option>
+                        <option value="negatief">Negatief</option>
+                        <option value="licht positief">Licht positief</option>
+                        <option value="positief">Positief</option>
+                        <option value="sterk positief">Sterk positief</option>
+                        <option value="niet uitgevoerd">Niet uitgevoerd</option>
+                        <option value="loodmenie visueel herkend">Loodmenie visueel herkend</option>
+                        <option value="niet eenduidig">De uitslag niet eenduidig door eigen kleur verf</option>
+                    </select>
+                </div>
+                 
+            <!-- ✅ Checkbox voor monsters + eerste inputveld + knop (eerste regel) -->
+                        <div class="col-xs-12">
+                        <label><input type="checkbox" class="monster-checkbox"> Monsters genomen?</label>
+
+                        <!-- ✅ Container waarin alle monsternummers + checkboxes komen -->
+                        <div class="monster-container">
+                            <div class="monster-item">
+                                <div class="monster-row">
+                                    <input type="text" class="form-control monster-nummer" placeholder="Voer monsternummer in" style="display: none;">
+
+                                    <!-- ✅ Checkboxes voor analyses (standaard verborgen) -->
+                                    <label class="analyse-label" style="display: none;">
+                                        <input type="checkbox" class="analyse-chroom6"> Analyse op chroom-6
+                                    </label>
+                                    <label class="analyse-label" style="display: none;">
+                                        <input type="checkbox" class="analyse-lood"> Analyse op lood
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ✅ Knop om extra monster-velden toe te voegen (verborgen totdat de checkbox is aangevinkt) -->
+                        <button type="button" class="btn btn-light add-monster" style="display: none;">Nog een monster toevoegen</button>
+                        </div>
+                 
+             </div>
+            
+        </div> 
+        <br>
+        <button id="next" type="button" class="btn btn-info">Nog een onderdeel toevoegen</button>
+    </div>
+        <hr>
+        <p id="melding" class="col-md-12 text-left"></p>
+        
+        <button id="tabelSamples" class="btn btn-success">Genereer monstertabel</button>
+        <!-- Container voor de gegenereerde monstertabel -->
+<div id="monstertabel-container" class="col-md-12"></div>
+        <br>
+        <br>
+        <button id="exportWord" class="btn btn-warning">Exporteer de samenvattingstabel naar Word</button>
+        <br>
+        <br>
+        <hr>
+        <button id="wisGegevens" class="btn btn-danger">Wis gegevens en start nieuw project</button>
+        <p id="meldingwis" class="col-md-12 text-left" style="color: red;">Let op, de gegevens kunnen dan niet meer worden hersteld!!!</p>
+    </div>     
+        
+        
+        <script>
+        
+// Knop om de tabel zichtbaar te maken
+        document.getElementById("begin").addEventListener("click", function () {
+            var tabel = document.getElementById("tabel");
+            var knop = document.getElementById("begin");
+            if (tabel.style.display!= "block"){
+              tabel.style.display= "block"; // Maak de tabel zichtbaar
+              knop.disabled = true; // Blokkeer de knop
+            }
+        });
+            
+// Nieuwe functie toegevoegd            
+    function configureDropdowns(regel) {  
+        var dropdown = regel.querySelector(".onderdeel-dropdown");
+        var inputField = regel.querySelector(".onderdeel-input");
+        
+        dropdown.addEventListener("change", function () {
+            if (this.value === "anders") {
+                inputField.style.display = "block"; // Toon invoerveld
+                inputField.value = ""; // Maak invoerveld leeg
+                inputField.focus();
+            } else {
+                inputField.style.display = "block"; // Toon invoerveld
+                inputField.value = this.value; // Vul het invoerveld met de gekozen waarde
+            }
+        });
+
+        inputField.addEventListener("input", function () {
+            dropdown.value = "anders"; // Zorg dat "Anders..." geselecteerd blijft als er een aanpassing is
+        });
+    }
+            
+ // Oude event listeners vervangen         
+    document.querySelectorAll(".regel").forEach(configureDropdowns);
+        
+            
+// Knop om een nieuwe rij toe te voegen
+    document.getElementById("next").addEventListener("click", function () {
+    var regelsDiv = document.getElementById("regels");
+    var bestaandeRegels = document.getElementsByClassName("regel").length;
+            
+    var nieuwNummer = (bestaandeRegels + 1).toString().padStart(2, "0"); // Genereert "02", "03", etc.
+
+                
+// Maak een nieuwe regel aan
+    var nieuweRegel = document.createElement("div");
+        nieuweRegel.className = "regel row";
+        nieuweRegel.innerHTML = `
+        <h4 class="col-xs-12">Constructie ${nieuwNummer}</h4>
+        <div class="col-xs-12">
+                <input name="onderdeelnr" class="form-control" type="hidden" value="${nieuwNummer}">
+        </div>
+ <!-- Drop-down + invoerveld -->
+         <div class="col-xs-12">
+                <select class="form-control onderdeel-dropdown">
+                    <option value="" selected disabled>Kies naam van het onderdeel</option>
+                    <option value="Draagconstructie">Draagconstructie</option>
+                    <option value="Deuren buiten">Deuren buiten</option>
+                    <option value="Deuren binnen">Deuren binnen</option>
+                    <option value="Deurkozijnen buiten">Deurkozijnen buiten</option>
+                    <option value="Deurkozijnen binnen">Deurkozijnen binnen</option>
+                    <option value="Raamkozijnen buiten">Raamkozijnen buiten</option>
+                    <option value="Raamkozijnen binnen">Raamkozijnen binnen</option>
+                    <option value="Hemelwaterafvoeren">Hemelwaterafvoeren</option>
+                    <option value="Trap en railing buiten">Trap en railing buiten</option>
+                    <option value="Trap en railing binnen">Trap en railing binnen</option>
+                    <option value="Damwand dakbeschot">Damwand dakbeschot</option>
+                    <option value="Hekken">Hekken</option>
+                    <option value="Transformatoren">Transformatoren</option>
+                    <option value="Schakelaars">Schakelaars</option>
+                    <option value="3-fase leidingen">3-fase leidingen</option>
+                    <option value="anders">Anders...</option>
+                </select>
+        
+                    <input type="text" class="form-control onderdeel-input" placeholder="Voer een onderdeel in" style="display:none;">
+            </div>        
+           <div class="col-xs-12 materiaal-opties">     
+                    <label><input type="radio" name="materiaal-${nieuwNummer}" value="staal" checked> staal</label>
+                    <label><input type="radio" name="materiaal-${nieuwNummer}" value="aluminium"> aluminium</label>
+                    <label><input type="radio" name="materiaal-${nieuwNummer}" value="koper"> koper</label>
+                    <label><input type="radio" name="materiaal-${nieuwNummer}" value="hout"> hout</label>
+            </div>
+            <div class="col-xs-12">
+                    <label>Aantal verflagen:</label>
+                    <input name="nrlagen" class="form-control verflaag-input" type="number" min="0" value="0">
+            </div>
+                    <div class="col-xs-12 verf-kleuren"></div>
+                    
+            <!-- ✅ Drop-down voor chroom-6 testresultaat -->
+            <div class="col-xs-12">
+                <label>Sneltest chroom-6:</label>
+                <select name="chroom6_uitslag" class="form-control">
+                    <option value="" selected disabled>Selecteer een optie...</option>
+                    <option value="negatief">Negatief</option>
+                    <option value="licht positief">Licht positief</option>
+                    <option value="positief">Positief</option>
+                    <option value="sterk positief">Sterk positief</option>
+                    <option value="niet uitgevoerd">Niet uitgevoerd</option>
+                    <option value="niet eenduidig">De uitslag niet eenduidig door eigen kleur verf</option>
+                </select>
+            </div>
+
+            <!-- ✅ Drop-down voor lood testresultaat -->
+            <div class="col-xs-12">
+                <label>Sneltest lood:</label>
+                <select name="lood_uitslag" class="form-control">
+                    <option value="" selected disabled>Selecteer een optie...</option>
+                    <option value="negatief">Negatief</option>
+                    <option value="licht positief">Licht positief</option>
+                    <option value="positief">Positief</option>
+                    <option value="sterk positief">Sterk positief</option>
+                    <option value="niet uitgevoerd">Niet uitgevoerd</option>
+                    <option value="loodmenie visueel herkend">Loodmenie visueel herkend</option>
+                    <option value="niet eenduidig">De uitslag niet eenduidig door eigen kleur verf</option>
+                </select>
+            </div>
+            
+                    <!-- ✅ Checkbox voor monsters + eerste inputveld + knop -->
+                <div class="col-xs-12">
+                    <label><input type="checkbox" class="monster-checkbox"> Monsters genomen?</label>
+
+                    <!-- ✅ Container waarin alle monsternummers komen -->
+                    <div class="monster-container">
+                        <input type="text" class="form-control monster-nummer" placeholder="Voer monsternummer in" style="display: none;">
+                    </div>
+
+                    <!-- ✅ Knop om extra monster-velden toe te voegen (verborgen totdat de checkbox is aangevinkt) -->
+                    <button type="button" class="btn btn-light add-monster" style="display: none;">Nog een monster toevoegen</button>
+                </div>
+            `;
+// Voeg de nieuwe regel toe aan de tabel
+    regelsDiv.appendChild(nieuweRegel);
+            
+// Zorg dat de nieuwe dropdown en input-veld werken zoals in de eerste regel
+        configureDropdowns(nieuweRegel); // Nieuwe dropdown-functionaliteit correct toegepast
+        
+    // Controleer of het aantal regels al het maximale aantal is
+    var melding=document.getElementById("melding");
+    if (document.getElementsByClassName("regel").length >= 100) {
+        melding.innerHTML="Je kunt maximaal 100 regels toevoegen.";
+        melding.style.color="red";
+        document.getElementById("next").disabled = true; // Knop uitschakelen bij limiet
+    }else {
+        melding.innerHTML = ""; // Melding wissen als limiet niet bereikt is
+    };
+        
+
+});
+
+// Pas de kleurvelden aan op basis van het aantal verflagen             
+    document.addEventListener("input", function (event) {
+    if (event.target.classList.contains("verflaag-input")) {
+        var aantalLagen = parseInt(event.target.value) || 0; // 0 als standaardwaarde toegestaan
+        var kleurContainer = event.target.closest(".regel").querySelector(".verf-kleuren");
+
+        // Verwijder bestaande invoervelden
+        kleurContainer.innerHTML = "";
+
+        // Genereer nieuwe invoervelden voor de kleuren; Genereer alleen velden als het aantal > 0 is
+        if (aantalLagen > 0) {
+        for (var i = 0; i < aantalLagen; i++) {
+            var kleurLabel = document.createElement("label");
+            kleurLabel.textContent = "Kleur laag " + (i + 1) + ":";
+
+            var kleurInput = document.createElement("input");
+            kleurInput.type = "text";
+            kleurInput.name = "kleurlaag" + (i + 1);
+            kleurInput.className = "form-control";
+            kleurInput.placeholder = "Voer kleur in";
+
+            // Voeg het label en invoerveld toe aan de container
+            kleurContainer.appendChild(kleurLabel);
+                kleurContainer.appendChild(kleurInput);
+            }
+        }
+    }
+});
+            
+    document.addEventListener("input", function (event) {
+    if (event.target.classList.contains("verflaag-input")) {
+        var aantalLagen = parseInt(event.target.value) || 0;
+        var regel = event.target.closest(".regel");
+        var chroom6Select = regel.querySelector("select[name='chroom6_uitslag']");
+        var loodSelect = regel.querySelector("select[name='lood_uitslag']");
+
+        // ✅ Laat testuitslagen alleen zien als er verflagen zijn ingevuld
+        if (aantalLagen > 0) {
+            chroom6Select.style.display = "block";
+            loodSelect.style.display = "block";
+        } else {
+            chroom6Select.style.display = "none";
+            loodSelect.style.display = "none";
+        }
+    }
+});   
+    
+// ✅ Analyses
+document.addEventListener("change", function (event) {
+    if (event.target.classList.contains("monster-checkbox")) {
+        var regel = event.target.closest(".regel");
+        var monsterContainer = regel.querySelector(".monster-container");
+        var addMonsterButton = regel.querySelector(".add-monster");
+
+        // **Verwijder bestaande inhoud bij uitvinken**
+        if (!event.target.checked) {
+            monsterContainer.innerHTML = "";
+            addMonsterButton.style.display = "none";
+            return;
+        }
+
+        // **Controleer of er al een monster-item is, zo niet: maak er een**
+        if (!monsterContainer.querySelector(".monster-item")) {
+            monsterContainer.innerHTML = `
+            <div class="monster-item">
+                <div class="monster-row">
+                    <input type="text" class="form-control monster-nummer" placeholder="Voer monsternummer in">
+                    <label class="analyse-label">
+                        <input type="checkbox" class="analyse-chroom6"> Analyse op chroom-6
+                    </label>
+                    <label class="analyse-label">
+                        <input type="checkbox" class="analyse-lood"> Analyse op lood
+                    </label>
+                </div>    
+            </div>`;
+        }
+
+        // **Toon de knop om extra monsters toe te voegen**
+        addMonsterButton.style.display = "inline-block";
+    }
+});
+
+// ✅ Functie om extra monster-velden toe te voegen met checkboxes
+document.addEventListener("click", function (event) {
+    if (event.target.classList.contains("add-monster")) {
+        var monsterContainer = event.target.closest(".col-xs-12").querySelector(".monster-container");
+
+        // ✅ Maak een nieuw monster-item met checkboxes (standaard zichtbaar als "Monsters genomen?" aan staat)
+        var newMonsterItem = document.createElement("div");
+        newMonsterItem.className = "monster-item";
+        newMonsterItem.innerHTML = `
+        <div class="monster-row">
+            <input type="text" class="form-control monster-nummer" placeholder="Voer extra monsternummer in">
+            <label class="analyse-label">
+                <input type="checkbox" class="analyse-chroom6"> Analyse op chroom-6
+            </label>
+            <label class="analyse-label">
+                <input type="checkbox" class="analyse-lood"> Analyse op lood
+            </label>
+        </div>
+        `;
+
+        // ✅ Voeg het nieuwe monster-item toe aan de container
+        monsterContainer.appendChild(newMonsterItem);
+    }
+});
+            
+// **alle gegevens automatisch worden opgeslagen wanneer de gebruiker iets invoert.**            
+function saveData() {
+    let projectNummer = document.getElementById("projectNummer").value;
+    if (!projectNummer) return; // Geen projectnummer? Niet opslaan.
+
+    let projectData = [];
+
+    document.querySelectorAll(".regel").forEach((regel, index) => {
+        let onderdeel = regel.querySelector(".onderdeel-dropdown").value || "";
+        let materiaal = regel.querySelector('input[name^="materiaal"]:checked')?.value || "";
+        let nrlagen = regel.querySelector(".verflaag-input").value || "0";
+        
+        let kleuren = Array.from(regel.querySelectorAll(".verf-kleuren input")).map(input => input.value);
+
+        let chroom6 = regel.querySelector("select[name='chroom6_uitslag']").value || "";
+        let lood = regel.querySelector("select[name='lood_uitslag']").value || "";
+
+        let monsters = [];
+        regel.querySelectorAll(".monster-item").forEach(monster => {
+            let monsterNummer = monster.querySelector(".monster-nummer").value || "";
+            let analyseChroom6 = monster.querySelector(".analyse-chroom6")?.checked || false;
+            let analyseLood = monster.querySelector(".analyse-lood")?.checked || false;
+
+            if (monsterNummer) {
+                monsters.push({ monsterNummer, analyseChroom6, analyseLood });
+            }
+        });
+
+        projectData.push({ onderdeel, materiaal, nrlagen, kleuren, chroom6, lood, monsters });
+    });
+
+    localStorage.setItem(`projectData_${projectNummer}`, JSON.stringify(projectData));
+}
+
+// Het projectnummer wordt automatisch opgeslagen en gekoppeld aan de juiste gegevens
+document.getElementById("projectNummer").addEventListener("input", function () {
+    localStorage.setItem("projectNummer", this.value);
+});
+
+// **Luister naar alle inputvelden en sla automatisch op**
+document.addEventListener("input", saveData);
+document.addEventListener("change", saveData);
+            
+// **Functie om alle gegevens te wissen en een nieuwe vorm te laden**
+document.getElementById("wisGegevens").addEventListener("click", function () {
+    let projectNummer = document.getElementById("projectNummer").value;
+    if (!projectNummer) return; // Als er geen projectnummer is, doe niets
+
+    if (confirm("Weet je zeker dat je alle gegevens wilt wissen? Dit kan niet ongedaan worden gemaakt.")) {
+        localStorage.removeItem(`projectData_${projectNummer}`); // Verwijder opgeslagen projectgegevens
+        localStorage.removeItem("projectNummer"); // Verwijder het projectnummer
+        document.getElementById("projectNummer").value = ""; // Leeg het projectnummer veld
+
+        // **Leeg de vorm en zet deze terug naar standaard**
+        document.getElementById("regels").innerHTML = "";
+        document.getElementById("next").click(); // Voeg de eerste regel opnieuw toe
+
+        alert("Alle gegevens zijn gewist!");
+    }
+});
+            
+
+
+//alle opgeslagen gegevens worden hersteld zodra je de pagina opnieuw wordr geopent of ververst
+    function loadData() {
+    let projectNummer = localStorage.getItem("projectNummer");
+    if (!projectNummer) return; // Geen projectnummer? Niets laden.
+
+    document.getElementById("projectNummer").value = projectNummer;
+    let savedData = localStorage.getItem(`projectData_${projectNummer}`);
+    if (!savedData) return; // Geen opgeslagen gegevens? Niets laden.
+
+    savedData = JSON.parse(savedData);
+    let regelsDiv = document.getElementById("regels");
+    regelsDiv.innerHTML = ""; // Oude regels verwijderen
+
+    savedData.forEach((data, index) => {
+        document.getElementById("next").click(); // Voeg een nieuwe regel toe
+        let regel = document.querySelectorAll(".regel")[index];
+
+        regel.querySelector(".onderdeel-dropdown").value = data.onderdeel;
+        regel.querySelector(`input[name^="materiaal"][value="${data.materiaal}"]`)?.click();
+        regel.querySelector(".verflaag-input").value = data.nrlagen;
+
+        let kleurContainer = regel.querySelector(".verf-kleuren");
+        kleurContainer.innerHTML = "";
+        data.kleuren.forEach((kleur, i) => {
+            let kleurInput = document.createElement("input");
+            kleurInput.type = "text";
+            kleurInput.className = "form-control";
+            kleurInput.placeholder = `Kleur laag ${i + 1}`;
+            kleurInput.value = kleur;
+            kleurContainer.appendChild(kleurInput);
+        });
+
+        regel.querySelector("select[name='chroom6_uitslag']").value = data.chroom6;
+        regel.querySelector("select[name='lood_uitslag']").value = data.lood;
+
+        if (data.monsters.length > 0) {
+            let monsterCheckbox = regel.querySelector(".monster-checkbox");
+            monsterCheckbox.checked = true;
+            monsterCheckbox.dispatchEvent(new Event("change")); // Activeer de checkbox
+
+            let monsterContainer = regel.querySelector(".monster-container");
+            monsterContainer.innerHTML = ""; // Verwijder oude monsters
+
+            data.monsters.forEach(monster => {
+                let monsterItem = document.createElement("div");
+                monsterItem.className = "monster-item";
+                monsterItem.innerHTML = `
+                    <div class="monster-row">
+                        <input type="text" class="form-control monster-nummer" placeholder="Voer monsternummer in" value="${monster.monsterNummer}">
+                        <label class="analyse-label">
+                            <input type="checkbox" class="analyse-chroom6" ${monster.analyseChroom6 ? "checked" : ""}> Analyse op chroom-6
+                        </label>
+                        <label class="analyse-label">
+                            <input type="checkbox" class="analyse-lood" ${monster.analyseLood ? "checked" : ""}> Analyse op lood
+                        </label>
+                    </div>
+                `;
+                monsterContainer.appendChild(monsterItem);
+            });
+        }
+    });
+}
+
+// Controleer of er gegevens in de localStorage staan
+if (document.getElementsByClassName("regel").length > 0) {
+    document.getElementById("tabel").style.display = "block"; // Maak de tabel direct zichtbaar
+    document.getElementById("begin").disabled = true; // Blokkeer de knop, zodat het niet opnieuw gedrukt hoeft te worden
+}
+
+// **Laad de opgeslagen gegevens bij het openen van de pagina**
+window.addEventListener("load", loadData);
+
+// Monstertabel         
+document.getElementById("tabelSamples").addEventListener("click", function () {
+    let tabelContainer = document.getElementById("monstertabel-container");
+    tabelContainer.innerHTML = ""; // Leeg de bestaande tabel als deze al bestaat
+
+    let regels = document.querySelectorAll(".regel");
+    let tabelHTML = `
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Constructie</th>
+                    <th>Monsternummer</th>
+                    <th>Analyses</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+    regels.forEach(regel => {
+        let constructieNummer = regel.querySelector("input[name='onderdeelnr']").value;
+        let constructieNaam = regel.querySelector(".onderdeel-dropdown").value || 
+                              regel.querySelector(".onderdeel-input").value || "Onbekend";
+        let monsterCheckbox = regel.querySelector(".monster-checkbox");
+
+        let monsterItems = regel.querySelectorAll(".monster-item");
+        let heeftMonsters = monsterItems.length > 0;
+        
+        if (heeftMonsters) {
+        monsterItems.forEach(monster => {
+            let monsternummer = monster.querySelector(".monster-nummer").value.trim();
+            if (monsternummer) { // Alleen toevoegen als er een monsternummer is ingevoerd
+                let analyseChroom6 = monster.querySelector(".analyse-chroom6").checked;
+                let analyseLood = monster.querySelector(".analyse-lood").checked;
+                let analyses = [];
+
+                if (analyseChroom6) analyses.push("chroom-6");
+                if (analyseLood) analyses.push("lood");
+
+                let analyseText = analyses.length > 1 ? "chroom-6 plus lood" : analyses.join(", ") || "Geen";
+
+                tabelHTML += `
+                    <tr>
+                        <td>${constructieNummer}. ${constructieNaam}</td>
+                        <td>${monsternummer}</td>
+                        <td>${analyseText}</td>
+                    </tr>`;
+            }
+        });
+        }
+        
+        // Voeg constructie toe zonder monsters
+        if (!monsterCheckbox.checked) {
+            tabelHTML += `
+                <tr>
+                    <td>${constructieNummer}. ${constructieNaam}</td>
+                    <td>geen monsters</td>
+                    <td></td>
+                </tr>`;
+        }
+        
+    });
+
+    tabelHTML += `</tbody></table>`;
+
+    // Alleen de tabel tonen als er daadwerkelijk monsters zijn
+    if (tabelHTML.includes("<td>")) {
+        tabelContainer.innerHTML = tabelHTML;
+    } else {
+        tabelContainer.innerHTML = "<p class='text-warning'>Geen monsters geregistreerd.</p>";
+    }
+});
+
+            
+    document.addEventListener("DOMContentLoaded", function () {
+    console.log("Pagina geladen. Docxtemplater beschikbaar?", typeof window.Docxtemplater);
+});
+
+            
+            
+// Functie om de monstertabelgegevens op te halen en om te zetten naar een Word-bestand
+document.getElementById("exportWord").addEventListener("click", function () {
+    console.log("Start export naar Word...");
+    
+    fetch("sjabloon_samenvatting.docx") // Zorg dat het juiste sjabloon in de map staat
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Kan sjabloonbestand niet laden. Controleer het pad!");
+            }
+            return res.arrayBuffer();
+        })
+        .then(content => {
+            let zip = new PizZip(content);
+            let doc = new window.docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
+
+            // **Gegevens verzamelen uit de monstertabel**
+            let regels = document.querySelectorAll(".regel");
+            let tabelData = [];
+
+            regels.forEach(regel => {
+                let constructieNummer = regel.querySelector("input[name='onderdeelnr']").value;
+                let constructieNaam = regel.querySelector(".onderdeel-dropdown").value || 
+                                    regel.querySelector(".onderdeel-input").value || "Onbekend";
+                let verfLagen = Array.from(regel.querySelectorAll(".verf-kleuren input"))
+                                    .map(input => input.value).join(", ");
+                let chroom6Resultaat = regel.querySelector("select[name='chroom6_uitslag']").value || "Niet uitgevoerd";
+                let loodResultaat = regel.querySelector("select[name='lood_uitslag']").value || "Niet uitgevoerd";
+
+                let monsterCheckbox = regel.querySelector(".monster-checkbox");
+                let monsterItems = regel.querySelectorAll(".monster-item");
+
+                if (monsterCheckbox.checked && monsterItems.length > 0) {
+                    monsterItems.forEach(monster => {
+                        let monsternummer = monster.querySelector(".monster-nummer").value.trim();
+                        if (monsternummer) {
+                            let analyseChroom6 = monster.querySelector(".analyse-chroom6").checked;
+                            let analyseLood = monster.querySelector(".analyse-lood").checked;
+                            let analyses = [];
+                            if (analyseChroom6) analyses.push("analyse chroom-6");
+                            if (analyseLood) analyses.push("analyse lood");
+                            
+                            let gehalteChroom = analyseChroom6 ? "**analyse chroom-6**" : "geen analyse"; // 🔹 AANPASSING
+                            let gehalteLood = analyseLood ? "**analyse lood**" : "geen analyse"; // 🔹 AANPASSING
+
+
+                            tabelData.push({
+                                onderdeel: constructieNummer + ". " + constructieNaam,
+                                monsterNr: monsternummer,
+                                verfsysteem: verfLagen.replace(/\n/g, "\r\n"), // ✅ Oplossing voor nieuwe regels
+                                sneltest_chroom: chroom6Resultaat,
+                                sneltest_lood: loodResultaat,
+                                gehalte_chroom: gehalteChroom, // 🔹 AANPASSING: Nieuw veld voor Chroom(IV)
+                                gehalte_lood: gehalteLood, // 🔹 AANPASSING: Nieuw veld voor Lood
+                              
+                            });
+                        }
+                    });
+                } else {
+                    // Voeg constructie toe zonder monsters
+                    tabelData.push({
+                        onderdeel: constructieNummer + ". " + constructieNaam,
+                        monsterNr: "geen monsters",
+                        verfsysteem: verfLagen.replace(/\n/g, "\r\n"),
+                        sneltest_chroom: chroom6Resultaat,
+                        sneltest_lood: loodResultaat,
+                        gehalte_chroom: "geen analyse", // 🔹 AANPASSING: Geen analyse chroom-6 bij geen monster
+                        gehalte_lood: "geen analyse", // 🔹 AANPASSING: Geen analyse lood bij geen monster
+                        
+                    });
+                }
+            });
+
+        
+            doc.setData({ tabel: tabelData });
+
+
+            try {
+                doc.render();
+                let out = doc.getZip().generate({ type: "blob" });
+                saveAs(out, "Samenvatting_analyse.docx");
+                console.log("Word-bestand gegenereerd en gedownload.");
+            } catch (error) {
+                console.error("Fout bij genereren en downloaden van Word-bestand:", error);
+            }
+        })
+        .catch(err => console.error("Fout bij genereren Word-bestand:", err));
+});
+
+        </script>
+        
+    </body>
+</html>
+
