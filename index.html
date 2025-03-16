@@ -496,7 +496,11 @@ function saveData() {
     let projectData = [];
 
     document.querySelectorAll(".regel").forEach((regel, index) => {
-        let onderdeel = regel.querySelector(".onderdeel-dropdown").value || "";
+        let dropdown = regel.querySelector(".onderdeel-dropdown");
+        let inputField = regel.querySelector(".onderdeel-input");
+
+        let onderdeel = dropdown.value === "anders" ? inputField.value : dropdown.value;
+        
         let materiaal = regel.querySelector('input[name^="materiaal"]:checked')?.value || "";
         let nrlagen = regel.querySelector(".verflaag-input").value || "0";
         
@@ -568,7 +572,23 @@ document.getElementById("wisGegevens").addEventListener("click", function () {
         document.getElementById("next").click(); // Voeg een nieuwe regel toe
         let regel = document.querySelectorAll(".regel")[index];
 
-        regel.querySelector(".onderdeel-dropdown").value = data.onderdeel;
+        let dropdown = regel.querySelector(".onderdeel-dropdown");
+        let inputField = regel.querySelector(".onderdeel-input");
+
+        // Als de opgeslagen waarde niet voorkomt in de opties van de dropdown, dan is het een vrije invoer
+        let isAnders = !Array.from(dropdown.options).some(option => option.value === data.onderdeel);
+
+        // Als het een vrije invoer is, zet dan de dropdown op "Anders" en toon de ingevoerde waarde
+        if (isAnders) {
+            dropdown.value = "anders";
+            inputField.style.display = "block"; 
+            inputField.value = data.onderdeel; 
+        } else {
+            dropdown.value = data.onderdeel; 
+            inputField.style.display = "none"; 
+        }
+        
+        
         regel.querySelector(`input[name^="materiaal"][value="${data.materiaal}"]`)?.click();
         regel.querySelector(".verflaag-input").value = data.nrlagen;
 
@@ -642,7 +662,7 @@ document.getElementById("tabelSamples").addEventListener("click", function () {
 
     regels.forEach(regel => {
         let constructieNummer = regel.querySelector("input[name='onderdeelnr']").value;
-         let dropdown = regel.querySelector(".onderdeel-dropdown");
+        let dropdown = regel.querySelector(".onderdeel-dropdown");
         let inputField = regel.querySelector(".onderdeel-input");
         
         // Controleer of "Anders" is gekozen
@@ -737,6 +757,7 @@ document.getElementById("exportWord").addEventListener("click", function () {
 
                 // Als zowel de dropdown als de invoer leeg zijn, toon "Onbekend"
                 if (!constructieNaam) constructieNaam = "Onbekend";
+                
                 
                 let verfLagen = Array.from(regel.querySelectorAll(".verf-kleuren input"))
                                     .map(input => input.value).join(", ");
