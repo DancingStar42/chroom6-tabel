@@ -779,7 +779,7 @@ document.getElementById("exportWord").addEventListener("click", function () {
 
             try {
                 doc.render();
-                let out = doc.getZip().generate({ type: "blob" });
+                let out = doc.getZip().generate({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
                 saveAs(out, "Samenvatting_analyse.docx");
                 console.log("Word-bestand gegenereerd en gedownload.");
             } catch (error) {
