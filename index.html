@@ -729,8 +729,15 @@ document.getElementById("exportWord").addEventListener("click", function () {
 
             regels.forEach(regel => {
                 let constructieNummer = regel.querySelector("input[name='onderdeelnr']").value;
-                let constructieNaam = regel.querySelector(".onderdeel-dropdown").value || 
-                                    regel.querySelector(".onderdeel-input").value || "Onbekend";
+                let dropdown = regel.querySelector(".onderdeel-dropdown");
+                let inputField = regel.querySelector(".onderdeel-input");
+
+                // Controleer of "Anders" is gekozen, dan gebruik de ingevulde tekst
+                let constructieNaam = dropdown.value === "anders" ? inputField.value.trim() : dropdown.value;
+
+                // Als zowel de dropdown als de invoer leeg zijn, toon "Onbekend"
+                if (!constructieNaam) constructieNaam = "Onbekend";
+                
                 let verfLagen = Array.from(regel.querySelectorAll(".verf-kleuren input"))
                                     .map(input => input.value).join(", ");
                 let chroom6Resultaat = regel.querySelector("select[name='chroom6_uitslag']").value || "Niet uitgevoerd";
