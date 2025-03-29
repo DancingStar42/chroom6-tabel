@@ -97,6 +97,26 @@
                 <label style= "color: red">Projectnummer (verplicht):</label>
                 <input type="text" id="projectNummer" class="form-control" placeholder="Voer projectnummer in">
             </div>
+            
+            <div class="col-xs-12">
+                <label>Adres locatie:</label>
+                <input type="text" id="adresLocatie" class="form-control" placeholder="Vul adres in">
+            </div>
+            
+            <div class="col-xs-12">
+                <label>Soort locatie:</label>
+                <input type="text" id="soortLocatie" class="form-control" placeholder="bijv. 50 kV onderstation @@@">
+            </div>
+            
+            <div class="col-xs-12">
+                <label>Doel onderzoek:</label>
+                <input type="text" id="doelOnderzoek" class="form-control" placeholder="bijv. totaalsloop">
+            </div>
+            
+            <div class="col-xs-12">
+                <label>Datum van het onderzoek:</label>
+                <input type="date" id="datumOnderzoek" class="form-control">
+            </div>
 
             <button id="begin" class="btn btn-primary" type="button" hidden>Begin met invullen</button>
         </div>
@@ -147,6 +167,29 @@
                     <!-- Invoerveld dat bewerkbaar is, wordt pas zichtbaar bij het kiezen uit de drop-down -->
                         <input type="text" class="form-control onderdeel-input" placeholder="Voer een onderdeel in" style="display:none;">
                  </div>
+                 
+                 <!-- Locatie -->
+                    <div class="col-xs-12">
+                        <label>Locatie:</label>
+                        <input type="text" class="form-control locatie-input" placeholder="Vul locatie in">
+                    </div>
+
+                <!-- Veld voor verdieping -->
+                <div class="col-xs-12 verdieping-container">
+                  <label>Verdieping:</label>
+                  <select class="form-control verdieping-dropdown">
+                    <option value="" selected disabled>Kies verdieping</option>
+                    <option value="diverse bouwlagen">diverse bouwlagen</option>
+                    <option value="kelder">kelder</option>
+                    <option value="begane grond">begane grond</option>
+                    <option value="1e verdieping">1e verdieping</option>
+                    <option value="2e verdieping">2e verdieping</option>
+                    <option value="tussenverdieping">tussenverdieping</option>
+                    <option value="dak">dak</option>
+                    <option value="anders">Anders...</option>
+                  </select>
+                  <input type="text" class="form-control verdieping-input" placeholder="Voer verdieping in" style="display:none;">
+                </div>
                  
                 <!-- Opties voor materiaal, staal bij default -->                     
                  <div class="col-xs-12 materiaal-opties">
@@ -235,6 +278,10 @@
     <br>
     <br>
     <hr>
+        <button id="exportWordrapport" class="btn btn-dark">Exporteer het rapport naar Word</button>
+    <br>
+    <br>
+    <hr>
         <button id="wisGegevens" class="btn btn-danger">Wis gegevens en start nieuw project</button>
         <p id="meldingwis" class="col-md-12 text-left" style="color: red;">Let op, de gegevens kunnen dan niet meer worden hersteld!!!</p>
     </div>     
@@ -304,6 +351,29 @@
                 <!-- Invoerveld dat bewerkbaar is, wordt pas zichtbaar bij het kiezen uit de drop-down -->
                 <input type="text" class="form-control onderdeel-input" placeholder="Voer een onderdeel in" style="display:none;">
             </div>
+            
+            <!-- Locatie -->
+            <div class="col-xs-12">
+                <label>Locatie:</label>
+                <input type="text" class="form-control locatie-input" placeholder="Vul locatie in">
+            </div>
+
+               <!-- Veld voor verdieping -->
+                <div class="col-xs-12 verdieping-container">
+                  <label>Verdieping:</label>
+                  <select class="form-control verdieping-dropdown">
+                    <option value="" selected disabled>Kies verdieping</option>
+                    <option value="diverse bouwlagen">diverse bouwlagen</option>
+                    <option value="kelder">kelder</option>
+                    <option value="begane grond">begane grond</option>
+                    <option value="1e verdieping">1e verdieping</option>
+                    <option value="2e verdieping">2e verdieping</option>
+                    <option value="tussenverdieping">tussenverdieping</option>
+                    <option value="dak">dak</option>
+                    <option value="anders">Anders...</option>
+                  </select>
+                  <input type="text" class="form-control verdieping-input" placeholder="Voer verdieping in" style="display:none;">
+                </div>
             
             <!-- Opties voor materiaal, staal bij default --> 
             <div class="col-xs-12 materiaal-opties">     
@@ -406,7 +476,27 @@
         inputField.addEventListener("input", function () {
             dropdown.value = "anders"; // "Anders..." wordt geselecteerd als er een aanpassing is in vrij input-veld
         });
-    }
+
+// Functie bij het kiezen van de verdieping uit de drop-down 
+        const verdiepingDropdown = regel.querySelector(".verdieping-dropdown");
+        const verdiepingInput = regel.querySelector(".verdieping-input");
+        
+        verdiepingDropdown.addEventListener("change", function () {
+            if (this.value === "anders") {
+                verdiepingInput.style.display = "block";
+                verdiepingInput.value = "";
+                verdiepingInput.focus();
+            } else {
+                verdiepingInput.style.display = "block";
+                verdiepingInput.value = this.value;
+            }
+        });
+
+        verdiepingInput.addEventListener("input", function () {
+            verdiepingDropdown.value = "anders";
+        });
+        }
+        
 // Loopt door alle constructieregels van het formulier, en activeert de dropdown-functionaliteit voor elk van die regels         
     document.querySelectorAll(".regel").forEach(configureDropdowns);
         
@@ -523,6 +613,18 @@
     function saveData() {
         let projectNummer = document.getElementById("projectNummer").value;
         if (!projectNummer) return;                       // Geen projectnummer? Niet opslaan.
+        
+        let adresLocatie = document.getElementById("adresLocatie").value;
+        localStorage.setItem(`adresLocatie_${projectNummer}`, adresLocatie);
+        
+        let soortLocatie = document.getElementById("soortLocatie").value;
+        localStorage.setItem(`soortLocatie_${projectNummer}`, soortLocatie);
+        
+        let doelOnderzoek = document.getElementById("doelOnderzoek").value;
+        localStorage.setItem(`doelOnderzoek_${projectNummer}`, doelOnderzoek);
+        
+        let datumOnderzoek = document.getElementById("datumOnderzoek").value;
+        localStorage.setItem(`datumOnderzoek_${projectNummer}`, datumOnderzoek);
 
         let projectData = [];
 
@@ -530,6 +632,13 @@
             let dropdown = regel.querySelector(".onderdeel-dropdown");
             let inputField = regel.querySelector(".onderdeel-input");
             let onderdeel = dropdown.value === "anders" ? inputField.value : dropdown.value;
+            
+            let locatie = regel.querySelector(".locatie-input")?.value || "";
+            
+            let verdiepingDropdown = regel.querySelector(".verdieping-dropdown");
+            let verdiepingInput = regel.querySelector(".verdieping-input");
+            let verdieping = verdiepingDropdown.value === "anders" ? verdiepingInput.value : verdiepingDropdown.value;
+            
             let materiaal = regel.querySelector('input[name^="materiaal"]:checked')?.value || "";
             let nrlagen = regel.querySelector(".verflaag-input").value || "0";
             let kleuren = Array.from(regel.querySelectorAll(".verf-kleuren input")).map(input => input.value);
@@ -547,7 +656,7 @@
                 });
             let opmerkingen = regel.querySelector(".opmerkingen-input")?.value || "";
             
-            projectData.push({ onderdeel, materiaal, nrlagen, kleuren, chroom6, lood, monsters, opmerkingen });
+            projectData.push({ onderdeel, locatie, verdieping, materiaal, nrlagen, kleuren, chroom6, lood, monsters, opmerkingen });
         });
 
     localStorage.setItem(`projectData_${projectNummer}`, JSON.stringify(projectData));
@@ -590,6 +699,26 @@
     if (!savedData) return; // Geen opgeslagen gegevens? Niets laden.
     savedData = JSON.parse(savedData);
         
+    let adresLocatie = localStorage.getItem(`adresLocatie_${projectNummer}`);
+    if (adresLocatie) {
+        document.getElementById("adresLocatie").value = adresLocatie;
+    }
+    
+    let soortLocatie = localStorage.getItem(`soortLocatie_${projectNummer}`);
+    if (soortLocatie) {
+        document.getElementById("soortLocatie").value = soortLocatie;
+    }
+        
+    let doelOnderzoek = localStorage.getItem(`doelOnderzoek_${projectNummer}`);
+    if (doelOnderzoek) {
+        document.getElementById("doelOnderzoek").value = doelOnderzoek;
+    }
+        
+    let datumOnderzoek = localStorage.getItem(`datumOnderzoek_${projectNummer}`);
+    if (datumOnderzoek) {
+        document.getElementById("datumOnderzoek").value = datumOnderzoek;
+    }
+        
     let regelsDiv = document.getElementById("regels");   
     regelsDiv.innerHTML = ""; // Oude regels verwijderen
 
@@ -612,6 +741,24 @@
         } else {
             dropdown.value = data.onderdeel; 
             inputField.style.display = "none"; 
+        }
+        
+        // Invullen locatie en verdieping
+        regel.querySelector(".locatie-input").value = data.locatie || "";
+        
+        // Herstellen verdieping
+        let verdiepingDropdown = regel.querySelector(".verdieping-dropdown");
+        let verdiepingInput = regel.querySelector(".verdieping-input");
+        let isAndersVerdieping = !Array.from(verdiepingDropdown.options).some(option => option.value === data.verdieping);
+
+        if (isAndersVerdieping) {
+            verdiepingDropdown.value = "anders";
+            verdiepingInput.style.display = "block";
+            verdiepingInput.value = data.verdieping;
+        } else {
+            verdiepingDropdown.value = data.verdieping;
+            verdiepingInput.style.display = "block";
+            verdiepingInput.value = data.verdieping;
         }
         
         // Invullen materiaal en aantal verflagen
@@ -783,9 +930,9 @@
 });
 
 
+// BLOK EXPORT WORD            
             
-            
-// Functie om de monstertabelgegevens op te halen en om te zetten naar een Word-bestand
+// Functie om de samenvattingstabelgegevens op te halen en om te zetten naar een Word-bestand
     document.getElementById("exportWord").addEventListener("click", function () {
     console.log("Start export naar Word...");
     
@@ -877,6 +1024,172 @@
         })
         .catch(err => console.error("Fout bij genereren Word-bestand:", err));
     });
+
+       
+        
+// Functie om de gegevens op te halen en om te zetten naar een rapportsjabloon in Word
+    document.getElementById("exportWordrapport").addEventListener("click", function () {
+    console.log("Start export naar Word-rapport...");
+    
+    fetch("sjabloon_rapport_chroom6_lood_v2.docx")
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Kan sjabloonbestand niet laden. Controleer het pad!");
+            }
+            return res.arrayBuffer();
+        })
+        .then(content => {
+            let zip = new PizZip(content);
+            let doc = new window.docxtemplater(zip, { paragraphLoop: true, linebreaks: true });
+
+            const regels = document.querySelectorAll(".regel");
+            const tabelData = [];
+            const uniekeConstructies = [];
+            const constructieLijst = [];
+
+            regels.forEach((regel, index) => {
+                let constructieNummer = regel.querySelector("input[name='onderdeelnr']").value;
+                let dropdown = regel.querySelector(".onderdeel-dropdown");
+                let inputField = regel.querySelector(".onderdeel-input");
+                let constructieNaam = dropdown.value === "anders" ? inputField.value.trim() : dropdown.value;
+                if (!constructieNaam) constructieNaam = "Onbekend";
+
+                let locatie = regel.querySelector(".locatie-input")?.value || "";
+
+                let verdiepingDropdown = regel.querySelector(".verdieping-dropdown");
+                let verdiepingInput = regel.querySelector(".verdieping-input");
+                let verdieping = verdiepingDropdown.value === "anders" ? verdiepingInput.value.trim() : verdiepingDropdown.value;
+
+                let materiaal = regel.querySelector('input[name^="materiaal"]:checked')?.value || "";
+                let nrlagen = regel.querySelector(".verflaag-input").value || "0";
+
+                
+                let verfLagenArray = Array.from(regel.querySelectorAll(".verf-kleuren input"))
+                    .map(input => input.value.trim())
+                    .filter(kleur => kleur !== "");
+                let kleurToplaag = verfLagenArray.length > 0 ? verfLagenArray[0] : "@@@@";
+                let kleurenOnderlagen = verfLagenArray.length > 1 ? verfLagenArray.slice(1).join(", ") : "geen";
+                
+                let verfLagen = verfLagenArray.join(", ");
+
+                let chroom6Resultaat = regel.querySelector("select[name='chroom6_uitslag']").value || "niet uitgevoerd";
+                let loodResultaat = regel.querySelector("select[name='lood_uitslag']").value || "niet uitgevoerd";
+
+                let opmerkingen = regel.querySelector(".opmerkingen-input")?.value || "";
+
+                let monsterCheckbox = regel.querySelector(".monster-checkbox");
+                let monsterItems = regel.querySelectorAll(".monster-item");
+
+                // Monsternummers verzamelen
+                let monsternummers = [];
+                monsterItems.forEach(monster => {
+                    let nummer = monster.querySelector(".monster-nummer").value.trim();
+                    if (nummer) monsternummers.push(nummer);
+                });
+                let monsternummerString = monsternummers.length > 0 ? monsternummers.join(", ") : "geen monsters";
+
+                // tabelData vullen (per monster, voor de samenvattingstabel)
+                if (monsternummers.length > 0) {
+                    monsterItems.forEach(monster => {
+                        let monsternummer = monster.querySelector(".monster-nummer").value.trim();
+                        if (!monsternummer) return;
+
+                        let analyseChroom6 = monster.querySelector(".analyse-chroom6").checked;
+                        let analyseLood = monster.querySelector(".analyse-lood").checked;
+
+                        let gehalteChroom = analyseChroom6 ? "**analyse chroom-6**" : "geen analyse"; 
+                        let gehalteLood = analyseLood ? "**analyse lood**" : "geen analyse";
+
+                        tabelData.push({
+                            onderdeel: constructieNummer + ". " + constructieNaam,
+                            locatie: locatie,
+                            verdieping: verdieping,
+                            monsterNr: monsternummer,
+                            verfsysteem: verfLagen.replace(/\n/g, "\r\n"),
+                            sneltest_chroom: chroom6Resultaat,
+                            sneltest_lood: loodResultaat,
+                            gehalte_chroom: gehalteChroom,
+                            gehalte_lood: gehalteLood,
+                            opmerkingen: opmerkingen
+                        });
+                    });
+                    } else {
+                        tabelData.push({
+                            onderdeel: constructieNummer + ". " + constructieNaam,
+                            locatie: locatie,
+                            verdieping: verdieping,
+                            monsterNr: "geen monsters",
+                            verfsysteem: verfLagen.replace(/\n/g, "\r\n"),
+                            sneltest_chroom: chroom6Resultaat,
+                            sneltest_lood: loodResultaat,
+                            gehalte_chroom: "geen analyse",
+                            gehalte_lood: "geen analyse",
+                            opmerkingen: opmerkingen
+                        });
+                    }
+                
+                // uniekeConstructies array vullen (één per constructie, voor bronbladen)
+                uniekeConstructies.push({
+                    onderdeel: constructieNummer + ". " + constructieNaam,
+                    locatie: locatie,
+                    verdieping: verdieping,
+                    materiaal: materiaal,
+                    aantal_lagen: nrlagen,
+                    kleur_toplaag: kleurToplaag,
+                    kleuren_onderlagen: kleurenOnderlagen,
+                    monsternummers: monsternummerString,
+                    sneltest_chroom: chroom6Resultaat,
+                    sneltest_lood: loodResultaat,
+                    opmerkingen: opmerkingen
+                });
+
+                // Voor constructielijst
+                constructieLijst.push(`${index + 1}. ${constructieNaam}`);
+                });
+
+            const constructielijstString = constructieLijst.join("\n");
+
+            const projectnummer = document.getElementById("projectNummer").value.trim();
+            const adresLocatie = document.getElementById("adresLocatie").value || "@@@@@";
+            const soortLocatie = document.getElementById("soortLocatie").value || "@@@@@";
+            const doelOnderzoek = document.getElementById("doelOnderzoek").value || "@@@@@";
+            const datumRaw = document.getElementById("datumOnderzoek").value || "";
+
+            let datumOnderzoek = "@@@@";
+            if (datumRaw) {
+                const maandenNederlands = [
+                    "januari", "februari", "maart", "april", "mei", "juni",
+                    "juli", "augustus", "september", "oktober", "november", "december"
+                ];
+                const datumObj = new Date(datumRaw);
+                const dag = datumObj.getDate();
+                const maand = maandenNederlands[datumObj.getMonth()];
+                const jaar = datumObj.getFullYear();
+                datumOnderzoek = `${dag} ${maand} ${jaar}`;
+            }
+
+            doc.setData({
+                tabel: tabelData,
+                uniekeConstructies: uniekeConstructies,
+                projectnummer: projectnummer,
+                adres: adresLocatie,
+                soort: soortLocatie,
+                datumOnderzoek: datumOnderzoek,
+                doel: doelOnderzoek,
+                constructielijst: constructielijstString
+            });
+
+            try {
+                doc.render();
+                let out = doc.getZip().generate({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+                saveAs(out, "Concept_rapport.docx");
+                console.log("Word-bestand van rapport gegenereerd en gedownload.");
+            } catch (error) {
+                console.error("Fout bij genereren en downloaden van Word-bestand van rapport:", error);
+            }
+        })
+        .catch(err => console.error("Fout bij genereren Word-bestand van rapport:", err));
+});
 
     </script>
         
